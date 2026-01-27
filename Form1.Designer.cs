@@ -48,6 +48,10 @@
             delete = new Button();
             allclear = new Button();
             screen = new TextBox();
+            leftButton = new Button();
+            exit = new Button();
+            rightButton = new Button();
+            posneg = new Button();
             SuspendLayout();
             // 
             // sevenButton
@@ -55,7 +59,7 @@
             sevenButton.BackColor = Color.Plum;
             sevenButton.FlatStyle = FlatStyle.Flat;
             sevenButton.ForeColor = Color.Indigo;
-            sevenButton.Location = new Point(15, 141);
+            sevenButton.Location = new Point(15, 220);
             sevenButton.Name = "sevenButton";
             sevenButton.Size = new Size(86, 93);
             sevenButton.TabIndex = 1;
@@ -68,7 +72,7 @@
             fourButton.BackColor = Color.Plum;
             fourButton.FlatStyle = FlatStyle.Flat;
             fourButton.ForeColor = Color.Indigo;
-            fourButton.Location = new Point(15, 240);
+            fourButton.Location = new Point(15, 319);
             fourButton.Name = "fourButton";
             fourButton.Size = new Size(86, 93);
             fourButton.TabIndex = 1;
@@ -81,7 +85,7 @@
             oneButton.BackColor = Color.Plum;
             oneButton.FlatStyle = FlatStyle.Flat;
             oneButton.ForeColor = Color.Indigo;
-            oneButton.Location = new Point(15, 339);
+            oneButton.Location = new Point(15, 418);
             oneButton.Name = "oneButton";
             oneButton.Size = new Size(86, 93);
             oneButton.TabIndex = 1;
@@ -94,7 +98,7 @@
             doublezeroButton.BackColor = Color.Plum;
             doublezeroButton.FlatStyle = FlatStyle.Flat;
             doublezeroButton.ForeColor = Color.Indigo;
-            doublezeroButton.Location = new Point(15, 439);
+            doublezeroButton.Location = new Point(15, 518);
             doublezeroButton.Name = "doublezeroButton";
             doublezeroButton.Size = new Size(86, 93);
             doublezeroButton.TabIndex = 1;
@@ -107,7 +111,7 @@
             eightButton.BackColor = Color.Plum;
             eightButton.FlatStyle = FlatStyle.Flat;
             eightButton.ForeColor = Color.Indigo;
-            eightButton.Location = new Point(107, 141);
+            eightButton.Location = new Point(107, 220);
             eightButton.Name = "eightButton";
             eightButton.Size = new Size(86, 93);
             eightButton.TabIndex = 1;
@@ -120,7 +124,7 @@
             fiveButton.BackColor = Color.Plum;
             fiveButton.FlatStyle = FlatStyle.Flat;
             fiveButton.ForeColor = Color.Indigo;
-            fiveButton.Location = new Point(107, 240);
+            fiveButton.Location = new Point(107, 319);
             fiveButton.Name = "fiveButton";
             fiveButton.Size = new Size(86, 93);
             fiveButton.TabIndex = 1;
@@ -133,7 +137,7 @@
             twoButton.BackColor = Color.Plum;
             twoButton.FlatStyle = FlatStyle.Flat;
             twoButton.ForeColor = Color.Indigo;
-            twoButton.Location = new Point(107, 339);
+            twoButton.Location = new Point(107, 418);
             twoButton.Name = "twoButton";
             twoButton.Size = new Size(86, 93);
             twoButton.TabIndex = 1;
@@ -146,7 +150,7 @@
             zeroButton.BackColor = Color.Plum;
             zeroButton.FlatStyle = FlatStyle.Flat;
             zeroButton.ForeColor = Color.Indigo;
-            zeroButton.Location = new Point(107, 439);
+            zeroButton.Location = new Point(107, 518);
             zeroButton.Name = "zeroButton";
             zeroButton.Size = new Size(86, 93);
             zeroButton.TabIndex = 1;
@@ -157,9 +161,10 @@
             // nineButton
             // 
             nineButton.BackColor = Color.Plum;
+            nineButton.FlatAppearance.MouseOverBackColor = Color.DarkMagenta;
             nineButton.FlatStyle = FlatStyle.Flat;
             nineButton.ForeColor = Color.Indigo;
-            nineButton.Location = new Point(199, 141);
+            nineButton.Location = new Point(199, 220);
             nineButton.Name = "nineButton";
             nineButton.Size = new Size(86, 93);
             nineButton.TabIndex = 1;
@@ -172,7 +177,7 @@
             sixButton.BackColor = Color.Plum;
             sixButton.FlatStyle = FlatStyle.Flat;
             sixButton.ForeColor = Color.Indigo;
-            sixButton.Location = new Point(199, 240);
+            sixButton.Location = new Point(199, 319);
             sixButton.Name = "sixButton";
             sixButton.Size = new Size(86, 93);
             sixButton.TabIndex = 1;
@@ -185,7 +190,7 @@
             threeButton.BackColor = Color.Plum;
             threeButton.FlatStyle = FlatStyle.Flat;
             threeButton.ForeColor = Color.Indigo;
-            threeButton.Location = new Point(199, 339);
+            threeButton.Location = new Point(199, 418);
             threeButton.Name = "threeButton";
             threeButton.Size = new Size(86, 93);
             threeButton.TabIndex = 1;
@@ -198,7 +203,7 @@
             period.BackColor = Color.Plum;
             period.FlatStyle = FlatStyle.Flat;
             period.ForeColor = Color.Indigo;
-            period.Location = new Point(199, 439);
+            period.Location = new Point(199, 518);
             period.Name = "period";
             period.Size = new Size(86, 93);
             period.TabIndex = 1;
@@ -211,7 +216,7 @@
             addition.BackColor = Color.Orchid;
             addition.FlatStyle = FlatStyle.Flat;
             addition.ForeColor = Color.DarkMagenta;
-            addition.Location = new Point(300, 207);
+            addition.Location = new Point(300, 289);
             addition.Name = "addition";
             addition.Size = new Size(97, 105);
             addition.TabIndex = 1;
@@ -224,7 +229,7 @@
             subtraction.BackColor = Color.Orchid;
             subtraction.FlatStyle = FlatStyle.Flat;
             subtraction.ForeColor = Color.DarkMagenta;
-            subtraction.Location = new Point(403, 207);
+            subtraction.Location = new Point(403, 289);
             subtraction.Name = "subtraction";
             subtraction.Size = new Size(97, 105);
             subtraction.TabIndex = 1;
@@ -237,7 +242,7 @@
             multiply.BackColor = Color.Orchid;
             multiply.FlatStyle = FlatStyle.Flat;
             multiply.ForeColor = Color.DarkMagenta;
-            multiply.Location = new Point(300, 318);
+            multiply.Location = new Point(300, 400);
             multiply.Name = "multiply";
             multiply.Size = new Size(97, 105);
             multiply.TabIndex = 1;
@@ -250,7 +255,7 @@
             division.BackColor = Color.Orchid;
             division.FlatStyle = FlatStyle.Flat;
             division.ForeColor = Color.DarkMagenta;
-            division.Location = new Point(403, 318);
+            division.Location = new Point(403, 400);
             division.Name = "division";
             division.Size = new Size(97, 105);
             division.TabIndex = 1;
@@ -263,7 +268,7 @@
             equals.BackColor = Color.MediumVioletRed;
             equals.FlatStyle = FlatStyle.Flat;
             equals.ForeColor = Color.Orchid;
-            equals.Location = new Point(300, 433);
+            equals.Location = new Point(300, 515);
             equals.Name = "equals";
             equals.Size = new Size(200, 99);
             equals.TabIndex = 1;
@@ -277,7 +282,7 @@
             delete.FlatStyle = FlatStyle.Flat;
             delete.Font = new Font("Century Gothic", 16F, FontStyle.Bold);
             delete.ForeColor = SystemColors.Window;
-            delete.Location = new Point(300, 141);
+            delete.Location = new Point(300, 223);
             delete.Name = "delete";
             delete.Size = new Size(97, 60);
             delete.TabIndex = 1;
@@ -291,7 +296,7 @@
             allclear.FlatStyle = FlatStyle.Flat;
             allclear.Font = new Font("Century Gothic", 16F, FontStyle.Bold);
             allclear.ForeColor = SystemColors.Window;
-            allclear.Location = new Point(403, 141);
+            allclear.Location = new Point(403, 223);
             allclear.Name = "allclear";
             allclear.Size = new Size(97, 60);
             allclear.TabIndex = 1;
@@ -307,18 +312,74 @@
             screen.Name = "screen";
             screen.ReadOnly = true;
             screen.ScrollBars = ScrollBars.Horizontal;
-            screen.Size = new Size(485, 98);
+            screen.Size = new Size(485, 114);
             screen.TabIndex = 2;
             screen.TextAlign = HorizontalAlignment.Right;
             screen.UseWaitCursor = true;
             screen.WordWrap = false;
+            // 
+            // leftButton
+            // 
+            leftButton.BackColor = Color.Plum;
+            leftButton.FlatStyle = FlatStyle.Flat;
+            leftButton.Font = new Font("Century Gothic", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            leftButton.ForeColor = Color.Indigo;
+            leftButton.Location = new Point(15, 150);
+            leftButton.Name = "leftButton";
+            leftButton.Size = new Size(128, 59);
+            leftButton.TabIndex = 1;
+            leftButton.Text = "<";
+            leftButton.UseVisualStyleBackColor = false;
+            leftButton.Click += left_Click;
+            // 
+            // exit
+            // 
+            exit.BackColor = Color.Plum;
+            exit.FlatStyle = FlatStyle.Flat;
+            exit.Font = new Font("Century Gothic", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            exit.ForeColor = Color.Indigo;
+            exit.Location = new Point(426, 150);
+            exit.Name = "exit";
+            exit.Size = new Size(74, 59);
+            exit.TabIndex = 1;
+            exit.Text = "EXIT";
+            exit.UseVisualStyleBackColor = false;
+            exit.Click += exit_Click;
+            // 
+            // rightButton
+            // 
+            rightButton.BackColor = Color.Plum;
+            rightButton.FlatStyle = FlatStyle.Flat;
+            rightButton.Font = new Font("Century Gothic", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            rightButton.ForeColor = Color.Indigo;
+            rightButton.Location = new Point(161, 150);
+            rightButton.Name = "rightButton";
+            rightButton.Size = new Size(124, 59);
+            rightButton.TabIndex = 1;
+            rightButton.Text = ">";
+            rightButton.UseVisualStyleBackColor = false;
+            rightButton.Click += right_Click;
+            // 
+            // posneg
+            // 
+            posneg.BackColor = Color.Plum;
+            posneg.FlatStyle = FlatStyle.Flat;
+            posneg.Font = new Font("Century Gothic", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            posneg.ForeColor = Color.Indigo;
+            posneg.Location = new Point(300, 150);
+            posneg.Name = "posneg";
+            posneg.Size = new Size(97, 59);
+            posneg.TabIndex = 1;
+            posneg.Text = "+/-";
+            posneg.UseVisualStyleBackColor = false;
+            posneg.Click += negativeSign;
             // 
             // BackGround
             // 
             AutoScaleMode = AutoScaleMode.None;
             AutoSize = true;
             BackColor = Color.DarkOrchid;
-            ClientSize = new Size(516, 552);
+            ClientSize = new Size(516, 626);
             Controls.Add(screen);
             Controls.Add(period);
             Controls.Add(zeroButton);
@@ -338,13 +399,20 @@
             Controls.Add(fiveButton);
             Controls.Add(eightButton);
             Controls.Add(fourButton);
+            Controls.Add(posneg);
+            Controls.Add(exit);
+            Controls.Add(rightButton);
+            Controls.Add(leftButton);
             Controls.Add(sevenButton);
             Font = new Font("Century Gothic", 20F, FontStyle.Bold);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Margin = new Padding(7, 6, 7, 6);
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "BackGround";
             RightToLeft = RightToLeft.No;
             Text = "My First Calculator";
-            Click += Operator_Click;
+            Load += BackGround_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -370,5 +438,9 @@
         private Button delete;
         private Button allclear;
         private TextBox screen;
+        private Button leftButton;
+        private Button exit;
+        private Button rightButton;
+        private Button posneg;
     }
 }
