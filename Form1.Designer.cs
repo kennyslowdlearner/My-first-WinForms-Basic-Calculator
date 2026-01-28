@@ -57,6 +57,7 @@
             // sevenButton
             // 
             sevenButton.BackColor = Color.Plum;
+            sevenButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             sevenButton.FlatStyle = FlatStyle.Flat;
             sevenButton.ForeColor = Color.Indigo;
             sevenButton.Location = new Point(15, 220);
@@ -70,6 +71,7 @@
             // fourButton
             // 
             fourButton.BackColor = Color.Plum;
+            fourButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             fourButton.FlatStyle = FlatStyle.Flat;
             fourButton.ForeColor = Color.Indigo;
             fourButton.Location = new Point(15, 319);
@@ -83,6 +85,7 @@
             // oneButton
             // 
             oneButton.BackColor = Color.Plum;
+            oneButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             oneButton.FlatStyle = FlatStyle.Flat;
             oneButton.ForeColor = Color.Indigo;
             oneButton.Location = new Point(15, 418);
@@ -96,6 +99,7 @@
             // doublezeroButton
             // 
             doublezeroButton.BackColor = Color.Plum;
+            doublezeroButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             doublezeroButton.FlatStyle = FlatStyle.Flat;
             doublezeroButton.ForeColor = Color.Indigo;
             doublezeroButton.Location = new Point(15, 518);
@@ -109,6 +113,7 @@
             // eightButton
             // 
             eightButton.BackColor = Color.Plum;
+            eightButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             eightButton.FlatStyle = FlatStyle.Flat;
             eightButton.ForeColor = Color.Indigo;
             eightButton.Location = new Point(107, 220);
@@ -122,6 +127,7 @@
             // fiveButton
             // 
             fiveButton.BackColor = Color.Plum;
+            fiveButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             fiveButton.FlatStyle = FlatStyle.Flat;
             fiveButton.ForeColor = Color.Indigo;
             fiveButton.Location = new Point(107, 319);
@@ -135,6 +141,7 @@
             // twoButton
             // 
             twoButton.BackColor = Color.Plum;
+            twoButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             twoButton.FlatStyle = FlatStyle.Flat;
             twoButton.ForeColor = Color.Indigo;
             twoButton.Location = new Point(107, 418);
@@ -148,6 +155,7 @@
             // zeroButton
             // 
             zeroButton.BackColor = Color.Plum;
+            zeroButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             zeroButton.FlatStyle = FlatStyle.Flat;
             zeroButton.ForeColor = Color.Indigo;
             zeroButton.Location = new Point(107, 518);
@@ -161,7 +169,7 @@
             // nineButton
             // 
             nineButton.BackColor = Color.Plum;
-            nineButton.FlatAppearance.MouseOverBackColor = Color.DarkMagenta;
+            nineButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             nineButton.FlatStyle = FlatStyle.Flat;
             nineButton.ForeColor = Color.Indigo;
             nineButton.Location = new Point(199, 220);
@@ -175,6 +183,7 @@
             // sixButton
             // 
             sixButton.BackColor = Color.Plum;
+            sixButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             sixButton.FlatStyle = FlatStyle.Flat;
             sixButton.ForeColor = Color.Indigo;
             sixButton.Location = new Point(199, 319);
@@ -188,6 +197,7 @@
             // threeButton
             // 
             threeButton.BackColor = Color.Plum;
+            threeButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             threeButton.FlatStyle = FlatStyle.Flat;
             threeButton.ForeColor = Color.Indigo;
             threeButton.Location = new Point(199, 418);
@@ -201,6 +211,7 @@
             // period
             // 
             period.BackColor = Color.Plum;
+            period.FlatAppearance.MouseOverBackColor = Color.HotPink;
             period.FlatStyle = FlatStyle.Flat;
             period.ForeColor = Color.Indigo;
             period.Location = new Point(199, 518);
@@ -214,6 +225,7 @@
             // addition
             // 
             addition.BackColor = Color.Orchid;
+            addition.FlatAppearance.MouseOverBackColor = Color.HotPink;
             addition.FlatStyle = FlatStyle.Flat;
             addition.ForeColor = Color.DarkMagenta;
             addition.Location = new Point(300, 289);
@@ -227,6 +239,7 @@
             // subtraction
             // 
             subtraction.BackColor = Color.Orchid;
+            subtraction.FlatAppearance.MouseOverBackColor = Color.HotPink;
             subtraction.FlatStyle = FlatStyle.Flat;
             subtraction.ForeColor = Color.DarkMagenta;
             subtraction.Location = new Point(403, 289);
@@ -240,6 +253,7 @@
             // multiply
             // 
             multiply.BackColor = Color.Orchid;
+            multiply.FlatAppearance.MouseOverBackColor = Color.HotPink;
             multiply.FlatStyle = FlatStyle.Flat;
             multiply.ForeColor = Color.DarkMagenta;
             multiply.Location = new Point(300, 400);
@@ -253,6 +267,7 @@
             // division
             // 
             division.BackColor = Color.Orchid;
+            division.FlatAppearance.MouseOverBackColor = Color.HotPink;
             division.FlatStyle = FlatStyle.Flat;
             division.ForeColor = Color.DarkMagenta;
             division.Location = new Point(403, 400);
@@ -267,7 +282,7 @@
             // 
             equals.BackColor = Color.MediumVioletRed;
             equals.FlatStyle = FlatStyle.Flat;
-            equals.ForeColor = Color.Orchid;
+            equals.ForeColor = Color.Indigo;
             equals.Location = new Point(300, 515);
             equals.Name = "equals";
             equals.Size = new Size(200, 99);
@@ -279,9 +294,10 @@
             // delete
             // 
             delete.BackColor = Color.Purple;
+            delete.FlatAppearance.MouseOverBackColor = Color.PaleVioletRed;
             delete.FlatStyle = FlatStyle.Flat;
             delete.Font = new Font("Century Gothic", 16F, FontStyle.Bold);
-            delete.ForeColor = SystemColors.Window;
+            delete.ForeColor = Color.Thistle;
             delete.Location = new Point(300, 223);
             delete.Name = "delete";
             delete.Size = new Size(97, 60);
@@ -293,9 +309,10 @@
             // allclear
             // 
             allclear.BackColor = Color.Indigo;
+            allclear.FlatAppearance.MouseOverBackColor = Color.PaleVioletRed;
             allclear.FlatStyle = FlatStyle.Flat;
             allclear.Font = new Font("Century Gothic", 16F, FontStyle.Bold);
-            allclear.ForeColor = SystemColors.Window;
+            allclear.ForeColor = Color.Thistle;
             allclear.Location = new Point(403, 223);
             allclear.Name = "allclear";
             allclear.Size = new Size(97, 60);
@@ -321,6 +338,7 @@
             // leftButton
             // 
             leftButton.BackColor = Color.Plum;
+            leftButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             leftButton.FlatStyle = FlatStyle.Flat;
             leftButton.Font = new Font("Century Gothic", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
             leftButton.ForeColor = Color.Indigo;
@@ -334,13 +352,14 @@
             // 
             // exit
             // 
-            exit.BackColor = Color.Plum;
+            exit.BackColor = Color.Fuchsia;
+            exit.FlatAppearance.MouseOverBackColor = Color.Crimson;
             exit.FlatStyle = FlatStyle.Flat;
             exit.Font = new Font("Century Gothic", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
             exit.ForeColor = Color.Indigo;
-            exit.Location = new Point(426, 150);
+            exit.Location = new Point(403, 150);
             exit.Name = "exit";
-            exit.Size = new Size(74, 59);
+            exit.Size = new Size(97, 59);
             exit.TabIndex = 1;
             exit.Text = "EXIT";
             exit.UseVisualStyleBackColor = false;
@@ -349,6 +368,7 @@
             // rightButton
             // 
             rightButton.BackColor = Color.Plum;
+            rightButton.FlatAppearance.MouseOverBackColor = Color.HotPink;
             rightButton.FlatStyle = FlatStyle.Flat;
             rightButton.Font = new Font("Century Gothic", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
             rightButton.ForeColor = Color.Indigo;
@@ -363,6 +383,7 @@
             // posneg
             // 
             posneg.BackColor = Color.Plum;
+            posneg.FlatAppearance.MouseOverBackColor = Color.HotPink;
             posneg.FlatStyle = FlatStyle.Flat;
             posneg.Font = new Font("Century Gothic", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
             posneg.ForeColor = Color.Indigo;

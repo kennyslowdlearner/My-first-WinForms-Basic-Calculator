@@ -1,3 +1,7 @@
+using System.Text.RegularExpressions;
+using System.Linq;
+
+
 namespace MyCalculator_1_
 {
 
@@ -52,7 +56,6 @@ namespace MyCalculator_1_
 
             int cursorPosition = screen.SelectionStart;
             
-
             if (displayAnswer == true)
             {
                 screen.Clear();
@@ -63,22 +66,23 @@ namespace MyCalculator_1_
             {
                 screen.Clear();
                 displayAnswer = false;
+                cursorPosition = 0;
             }
 
-            int lastSpace = screen.Text.LastIndexOf(' ', Math.Max(0, cursorPosition - 1));
-            string numberAtCursor = screen.Text.Substring(lastSpace + 1, cursorPosition - (lastSpace + 1));
-
-            if (numberAtCursor == "0")
+            if (cursorPosition > 0)
             {
-                screen.Text = screen.Text.Remove(cursorPosition - 1, 1).Insert(cursorPosition - 1, button.Text);
-                screen.SelectionStart = cursorPosition;
-            }
-            else
-            {
-                screen.Text = screen.Text.Insert(cursorPosition, button.Text);
-                screen.SelectionStart = cursorPosition + 1;
+                char currentChar = screen.Text[cursorPosition - 1];
+
+                if ("x/+-".Contains(currentChar))
+                {
+                    screen.Text = screen.Text.Insert(cursorPosition, " ");
+                    cursorPosition++;
+                }
             }
 
+            screen.Text = screen.Text.Insert(cursorPosition, button.Text);
+            
+            screen.SelectionStart = cursorPosition + 1;
             screen.Focus();
             screen.ScrollToCaret();
         }
@@ -91,24 +95,17 @@ namespace MyCalculator_1_
                 displayAnswer = false;
             }
 
-            if (string.IsNullOrEmpty(screen.Text) || screen.Text.EndsWith(" "))
+            int cursorPosition = screen.SelectionStart;
+
+            if (cursorPosition == 0 || "x/+".Contains(screen.Text[cursorPosition - 1]))
+            {
+                screen.Text = screen.Text.Insert(cursorPosition, "-");
+                screen.SelectionStart = cursorPosition + 1;
+            }
+            else
                 return;
 
-            string[] parts = screen.Text.Split(' ');
-            string currentNumber = parts[parts.Length - 1];
-
-            string newNumber;
-
-            if (currentNumber.StartsWith("-"))
-                newNumber = currentNumber.Substring(1);
-            else
-                newNumber = "-" + currentNumber;
-
-            int lastNumberIndex = screen.Text.LastIndexOf(currentNumber);
-            screen.Text = screen.Text.Remove(lastNumberIndex) + newNumber;
-
             screen.Focus();
-            screen.SelectionStart = screen.Text.Length;
             screen.ScrollToCaret();
         }
         private void Operator_Click(object sender, EventArgs e)
@@ -197,11 +194,31 @@ namespace MyCalculator_1_
             if (string.IsNullOrEmpty(screen.Text))
                 return;
 
-            List<string> parts = screen.Text.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).ToList();
+            string pattern = @"(?<=\b|^| )-\d+\.?\d*|\d+\.?\d*|[x/+-]";
 
-            string lastPart = parts[parts.Count - 1];
+            List<string> parts = Regex.Matches(screen.Text, pattern)
+                                        .Cast<Match>()
+                                        .Select(m => m.Value)
+                                        .ToList();
 
-            if (parts.Count == 0 || (parts.Count == 1 && parts[0] == "-"))
+            if (parts.Count == 0)
+                return;
+            if ("x/+".Contains(parts.Last()))
+            {
+                screen.Text = "Syntax Error";
+                displayAnswer = true;
+                return;
+            }
+
+
+            if (parts[0] == "x" || parts[0] == "/" || parts[0] == "+")
+            {
+                screen.Text = "Syntax Error";
+                displayAnswer = true;
+                return;
+            }
+
+            if (parts.Count < 3 && !(parts.Count == 1 && double.TryParse(parts[0], out _)))
             {
                 screen.Text = "Syntax Error";
                 displayAnswer = true;
@@ -219,6 +236,8 @@ namespace MyCalculator_1_
                     if (!double.TryParse(parts[z], out _))
                         throw new FormatException();
                 }
+
+
                 for (int a = 0; a < parts.Count; a++)
                 {
                     if (parts[a] == "x" || parts[a] == "/")
@@ -230,11 +249,10 @@ namespace MyCalculator_1_
                         if (parts[a] == "x")
                             tempResult = integerOne * integerTwo;
 
-                        else if (integerTwo == 0)
-                            throw new DivideByZeroException();
-
                         else if (parts[a] == "/")
                         {
+                            if (integerTwo == 0)
+                                throw new DivideByZeroException();
                             tempResult = integerOne / integerTwo;
                         }
 
@@ -253,10 +271,10 @@ namespace MyCalculator_1_
                     double solveNext = double.Parse(parts[a + 1]);
                     string operation = parts[a];
 
-                    if (parts[a] == "+")
+                    if (operation == "+")
                         currentResult += solveNext;
 
-                    else if (parts[a] == "-")
+                    else if (operation == "-")
                         currentResult -= solveNext;
                 }
 
@@ -266,11 +284,13 @@ namespace MyCalculator_1_
             }
             catch (DivideByZeroException)
             {
-                screen.Text = "Syntax Error";
+                screen.Text = "Math ERROR";
+                displayAnswer = true;
             }
             catch (Exception)
             {
-                screen.Text = "ERROR";
+                screen.Text = "Syntax ERROR";
+                displayAnswer = true;
             }
 
         }
@@ -297,19 +317,22 @@ namespace MyCalculator_1_
         }
 
         private void Decimal_Click(object sender, EventArgs e)
-        {
+        { 
+            // fix multiple decimals in a number
             int cursorPosition = screen.SelectionStart;
-            int lastSpace = screen.Text.LastIndexOf(' ', Math.Max(0, cursorPosition - 1));
-            string numberAtCursor = screen.Text.Substring(lastSpace + 1, cursorPosition - (lastSpace + 1));
 
-            if (numberAtCursor.Contains("."))
+            string[] chunks = screen.Text.Split(' ', '+', '-', 'x', '/');
+            string currentNumber = chunks.Last();
+
+            if (currentNumber.Contains("."))
                 return;
 
-            string toInsert = (numberAtCursor == "-" || string.IsNullOrEmpty(numberAtCursor)) ? "0." : ".";
+            string toInsert = (string.IsNullOrEmpty(currentNumber) || currentNumber == "-") ? "0." : ".";
             
             screen.Text = screen.Text.Insert(cursorPosition, toInsert);
             screen.SelectionStart = cursorPosition + toInsert.Length;
             screen.Focus();
+            screen.ScrollToCaret();
 
         }
 
@@ -317,21 +340,18 @@ namespace MyCalculator_1_
         {
             Button button = (Button)sender;
 
-            int cursorPosition = screen.SelectionStart;
-            int lastSpace = screen.Text.LastIndexOf(' ', Math.Max(0, cursorPosition - 1));
-            string numberAtCursor = screen.Text.Substring(lastSpace + 1, cursorPosition - (lastSpace + 1));
-
-            string[] parts = screen.Text.Split(' ');
-            string currentNumber = parts[parts.Length - 1];
-
-            if (displayAnswer == true)
+            if (displayAnswer == true || screen.Text == "Syntax Error" || screen.Text == "Error")
             {
                 screen.Clear();
                 displayAnswer = false;
             }
 
-            if (cursorPosition == 0 || (cursorPosition > 0 && screen.Text[cursorPosition - 1] == ' '))
+            int cursorPosition = screen.SelectionStart;
+
+            if (cursorPosition == 0 || (cursorPosition > 0 && "x/+- ".Contains(screen.Text[cursorPosition - 1])))
+            {
                 return;
+            }
 
 
             screen.Text = screen.Text.Insert(cursorPosition, "00");
@@ -354,7 +374,11 @@ namespace MyCalculator_1_
         {
             ErrorCutie(); //helper for error guard
             if (screen.SelectionStart < screen.Text.Length)
+            {
                 screen.SelectionStart += 1;
+                screen.ScrollToCaret();
+            }
+                
 
             
             screen.Focus();
@@ -364,7 +388,11 @@ namespace MyCalculator_1_
         {
             ErrorCutie();
             if (screen.SelectionStart > 0)
+            {
                 screen.SelectionStart -= 1;
+                screen.ScrollToCaret();     
+            }
+                
 
             screen.Focus();
         }
