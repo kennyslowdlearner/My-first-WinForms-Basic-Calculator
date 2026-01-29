@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,12 +53,29 @@ namespace MyCalculator_1_
             }
         }
 
-        // New helper: show/hide posneg depending on whether there's any number to toggle
+        // Helper: find the number token that contains the cursor (or is immediately after it).
+        // Returns (startIndex, length, tokenString).
+        private (int Start, int Length, string Token) GetNumberTokenAt(int cursorPosition)
+        {
+            string text = screen.Text ?? string.Empty;
+            cursorPosition = Math.Min(Math.Max(0, cursorPosition), text.Length);
+
+            // Find token start (scan left until space or start)
+            int start = cursorPosition;
+            while (start > 0 && text[start - 1] != ' ')
+                start--;
+
+            // Find token end (scan right until space or end)
+            int end = cursorPosition;
+            while (end < text.Length && text[end] != ' ')
+                end++;
+
+            string token = (end > start) ? text.Substring(start, end - start) : string.Empty;
+            return (start, end - start, token);
+        }
+
         private void UpdatePosNegState()
         {
-            // Hide posneg when there are no digit characters in the display.
-            // You can change the condition to be more permissive if you want
-            // the button to appear in more editing contexts.
             bool hasDigit = screen.Text.Any(char.IsDigit);
             posneg.Visible = hasDigit;
             posneg.Enabled = hasDigit;
@@ -74,7 +92,7 @@ namespace MyCalculator_1_
                 displayAnswer = false;
             }
 
-            int cursorPosition = screen.SelectionStart;
+            int cursorPosition = Math.Min(Math.Max(0, screen.SelectionStart), screen.Text.Length);
 
             if (displayAnswer == true || screen.Text == "Syntax Error" || screen.Text == "Error")
             {
@@ -83,10 +101,41 @@ namespace MyCalculator_1_
                 cursorPosition = 0;
             }
 
+            // Determine current token (number) around cursor
+            var tokenInfo = GetNumberTokenAt(cursorPosition);
+            string token = tokenInfo.Token;
+            int tokenStart = tokenInfo.Start;
+            int tokenLen = tokenInfo.Length;
+
+            // If the current token is exactly "0" or "-0" and we are inserting a non-zero digit,
+            // replace the token rather than append -> prevents leading zero like "03"
+            if (!string.IsNullOrEmpty(token))
+            {
+                string buttonText = button.Text;
+                bool insertingNonZero = buttonText != "0";
+
+                if ((token == "0" || token == "00" || token == "-0") && insertingNonZero)
+                {
+                    string newToken;
+                    if (token.StartsWith("-"))
+                        newToken = "-" + buttonText;
+                    else
+                        newToken = buttonText;
+
+                    screen.Text = screen.Text.Remove(tokenStart, tokenLen).Insert(tokenStart, newToken);
+                    screen.SelectionStart = tokenStart + newToken.Length;
+                    screen.Focus();
+                    screen.ScrollToCaret();
+
+                    UpdatePosNegState();
+                    return;
+                }
+            }
+
+            // When cursor is right after an operator character without space, ensure a space is inserted
             if (cursorPosition > 0)
             {
                 char currentChar = screen.Text[cursorPosition - 1];
-
                 if ("+-/x".Contains(currentChar))
                 {
                     screen.Text = screen.Text.Insert(cursorPosition, " ");
@@ -94,8 +143,8 @@ namespace MyCalculator_1_
                 }
             }
 
+            // Normal insertion
             screen.Text = screen.Text.Insert(cursorPosition, button.Text);
-
             screen.SelectionStart = cursorPosition + 1;
             screen.Focus();
             screen.ScrollToCaret();
@@ -109,7 +158,6 @@ namespace MyCalculator_1_
 
             int cursorPosition = screen.SelectionStart;
             string text = screen.Text;
-
 
             int lastDelimiter = -1;
             char[] delimiters = { '+', 'x', '/', ' ' };
@@ -144,7 +192,6 @@ namespace MyCalculator_1_
             ErrorCutie();
             Button button = (Button)sender;
             string newOperation = button.Text;
-
 
             if (displayAnswer)
             {
@@ -310,17 +357,26 @@ namespace MyCalculator_1_
         private void Decimal_Click(object sender, EventArgs e)
         {
             // fix multiple decimals in a number
-            int cursorPosition = screen.SelectionStart;
-            string textBeforeCursor = screen.Text.Substring(0, cursorPosition);
+            int cursorPosition = Math.Min(Math.Max(0, screen.SelectionStart), screen.Text.Length);
 
-            string[] chunks = textBeforeCursor.Split(new char[] { ' ', '+', '-', 'x', '/' }, StringSplitOptions.None);
-            string currentNumber = chunks.Last();
+            var tokenInfo = GetNumberTokenAt(cursorPosition);
+            string currentNumber = tokenInfo.Token;
+            int tokenStart = tokenInfo.Start;
 
-            if (currentNumber.Contains("."))
+            // If currentNumber already contains a decimal point, do nothing
+            if (!string.IsNullOrEmpty(currentNumber) && currentNumber.Contains("."))
                 return;
 
-            string toInsert = (string.IsNullOrEmpty(currentNumber) || currentNumber == "-") ? "0." : ".";
+            // If token is empty or just "-" insert "0." after start
+            string toInsert;
+            if (string.IsNullOrEmpty(currentNumber))
+                toInsert = "0.";
+            else if (currentNumber == "-")
+                toInsert = "0.";
+            else
+                toInsert = ".";
 
+            // Insert at cursor position
             screen.Text = screen.Text.Insert(cursorPosition, toInsert);
             screen.SelectionStart = cursorPosition + toInsert.Length;
             screen.Focus();
@@ -331,21 +387,29 @@ namespace MyCalculator_1_
 
         private void doubleZero_Click(object sender, EventArgs e)
         {
-            Button button = (Button)sender;
-
             if (displayAnswer == true || screen.Text == "Syntax Error" || screen.Text == "Error")
             {
                 screen.Clear();
                 displayAnswer = false;
             }
 
-            int cursorPosition = screen.SelectionStart;
+            int cursorPosition = Math.Min(Math.Max(0, screen.SelectionStart), screen.Text.Length);
+
+            // Determine token at cursor. If token is a single "0" or empty, don't insert "00" (prevents 000/leading zeros)
+            var tokenInfo = GetNumberTokenAt(cursorPosition);
+            string token = tokenInfo.Token;
+
+            if (string.IsNullOrEmpty(token) || token == "0" || token == "-0")
+            {
+                // do nothing - pressing "00" when there is no valid number or only a single leading zero should be ignored
+                UpdatePosNegState();
+                return;
+            }
 
             if (cursorPosition == 0 || (cursorPosition > 0 && "x/+- ".Contains(screen.Text[cursorPosition - 1])))
             {
                 return;
             }
-
 
             screen.Text = screen.Text.Insert(cursorPosition, "00");
             screen.SelectionStart = cursorPosition + 2;
