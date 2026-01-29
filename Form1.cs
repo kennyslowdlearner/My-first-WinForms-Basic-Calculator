@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace MyCalculator_1_
         double result;
         string operation = " ";
         bool displayAnswer;
-        public BackGround() //never delete this constructor
+        public BackGround() 
         {
             InitializeComponent();
         }
@@ -53,19 +52,15 @@ namespace MyCalculator_1_
             }
         }
 
-        // Helper: find the number token that contains the cursor (or is immediately after it).
-        // Returns (startIndex, length, tokenString).
         private (int Start, int Length, string Token) GetNumberTokenAt(int cursorPosition)
         {
             string text = screen.Text ?? string.Empty;
             cursorPosition = Math.Min(Math.Max(0, cursorPosition), text.Length);
 
-            // Find token start (scan left until space or start)
             int start = cursorPosition;
             while (start > 0 && text[start - 1] != ' ')
                 start--;
 
-            // Find token end (scan right until space or end)
             int end = cursorPosition;
             while (end < text.Length && text[end] != ' ')
                 end++;
@@ -83,7 +78,7 @@ namespace MyCalculator_1_
 
         private void Number_Click(object sender, EventArgs e)
         {
-            ErrorCutie(); //helper for error guard
+            ErrorCutie(); 
             Button button = (Button)sender;
 
             if (displayAnswer == true)
@@ -101,14 +96,11 @@ namespace MyCalculator_1_
                 cursorPosition = 0;
             }
 
-            // Determine current token (number) around cursor
             var tokenInfo = GetNumberTokenAt(cursorPosition);
             string token = tokenInfo.Token;
             int tokenStart = tokenInfo.Start;
             int tokenLen = tokenInfo.Length;
 
-            // If the current token is exactly "0" or "-0" and we are inserting a non-zero digit,
-            // replace the token rather than append -> prevents leading zero like "03"
             if (!string.IsNullOrEmpty(token))
             {
                 string buttonText = button.Text;
@@ -132,7 +124,6 @@ namespace MyCalculator_1_
                 }
             }
 
-            // When cursor is right after an operator character without space, ensure a space is inserted
             if (cursorPosition > 0)
             {
                 char currentChar = screen.Text[cursorPosition - 1];
@@ -143,7 +134,6 @@ namespace MyCalculator_1_
                 }
             }
 
-            // Normal insertion
             screen.Text = screen.Text.Insert(cursorPosition, button.Text);
             screen.SelectionStart = cursorPosition + 1;
             screen.Focus();
@@ -212,13 +202,11 @@ namespace MyCalculator_1_
                 return;
             }
 
-            // only replace the operator character when the pattern is " space operator space "
             if (cursorPosition >= 3 &&
                 screen.Text[cursorPosition - 1] == ' ' &&
                 screen.Text[cursorPosition - 3] == ' ' &&
                 "+-x/".Contains(screen.Text[cursorPosition - 2]))
             {
-                // replace the operator itself and keep surrounding spaces and numbers intact
                 screen.Text = screen.Text.Remove(cursorPosition - 2, 1).Insert(cursorPosition - 2, newOperation);
                 screen.SelectionStart = cursorPosition;
                 UpdatePosNegState();
@@ -356,18 +344,15 @@ namespace MyCalculator_1_
 
         private void Decimal_Click(object sender, EventArgs e)
         {
-            // fix multiple decimals in a number
             int cursorPosition = Math.Min(Math.Max(0, screen.SelectionStart), screen.Text.Length);
 
             var tokenInfo = GetNumberTokenAt(cursorPosition);
             string currentNumber = tokenInfo.Token;
             int tokenStart = tokenInfo.Start;
 
-            // If currentNumber already contains a decimal point, do nothing
             if (!string.IsNullOrEmpty(currentNumber) && currentNumber.Contains("."))
                 return;
 
-            // If token is empty or just "-" insert "0." after start
             string toInsert;
             if (string.IsNullOrEmpty(currentNumber))
                 toInsert = "0.";
@@ -376,7 +361,6 @@ namespace MyCalculator_1_
             else
                 toInsert = ".";
 
-            // Insert at cursor position
             screen.Text = screen.Text.Insert(cursorPosition, toInsert);
             screen.SelectionStart = cursorPosition + toInsert.Length;
             screen.Focus();
@@ -395,13 +379,11 @@ namespace MyCalculator_1_
 
             int cursorPosition = Math.Min(Math.Max(0, screen.SelectionStart), screen.Text.Length);
 
-            // Determine token at cursor. If token is a single "0" or empty, don't insert "00" (prevents 000/leading zeros)
             var tokenInfo = GetNumberTokenAt(cursorPosition);
             string token = tokenInfo.Token;
 
             if (string.IsNullOrEmpty(token) || token == "0" || token == "-0")
             {
-                // do nothing - pressing "00" when there is no valid number or only a single leading zero should be ignored
                 UpdatePosNegState();
                 return;
             }
@@ -431,7 +413,7 @@ namespace MyCalculator_1_
 
         private void right_Click(object sender, EventArgs e)
         {
-            ErrorCutie(); //helper for error guard
+            ErrorCutie(); 
             if (screen.SelectionStart < screen.Text.Length)
             {
                 screen.SelectionStart += 1;
