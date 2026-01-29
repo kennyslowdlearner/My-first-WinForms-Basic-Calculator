@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Net.Http.Headers;
 
 
 namespace MyCalculator_1_
@@ -73,7 +74,7 @@ namespace MyCalculator_1_
             {
                 char currentChar = screen.Text[cursorPosition - 1];
 
-                if ("x/+-".Contains(currentChar))
+                if ("+-/x".Contains(currentChar))
                 {
                     screen.Text = screen.Text.Insert(cursorPosition, " ");
                     cursorPosition++;
@@ -89,210 +90,159 @@ namespace MyCalculator_1_
 
         private void negativeSign(object sender, EventArgs e)
         {
-            if (displayAnswer == true)
-            {
-                screen.Clear();
-                displayAnswer = false;
-            }
+            if (displayAnswer) displayAnswer = false;
 
             int cursorPosition = screen.SelectionStart;
+            string text = screen.Text;
 
-            if (cursorPosition == 0 || "x/+".Contains(screen.Text[cursorPosition - 1]))
+
+            int lastDelimiter = -1;
+            char[] delimiters = { '+', 'x', '/', ' ' };
+
+            for (int i = cursorPosition - 1; i >= 0; i--)
             {
-                screen.Text = screen.Text.Insert(cursorPosition, "-");
-                screen.SelectionStart = cursorPosition + 1;
+                if (delimiters.Contains(text[i]))
+                {
+                    lastDelimiter = i;
+                    break;
+                }
+            }
+
+            int startOfNumber = lastDelimiter + 1;
+
+            if (startOfNumber < text.Length && text[startOfNumber] == '-')
+            {
+                screen.Text = text.Remove(startOfNumber, 1);
+                screen.SelectionStart = Math.Max(0, cursorPosition - 1);
             }
             else
-                return;
-
+            {
+                screen.Text = text.Insert(startOfNumber, "-");
+                screen.SelectionStart = cursorPosition + 1;
+            }
             screen.Focus();
-            screen.ScrollToCaret();
         }
         private void Operator_Click(object sender, EventArgs e)
         {
-            // implement line for 9 + 7 - 8 / -> okay na bahahaha
-            ErrorCutie(); //helper for error guard
-
+            ErrorCutie();
             Button button = (Button)sender;
             string newOperation = button.Text;
             int cursorPosition = screen.SelectionStart;
 
-            string[] parts = screen.Text.Split(' ');
-            string currentNumber = parts[parts.Length - 1];
-
-            if (displayAnswer == true)
-            {
-               screen.Clear();
-               displayAnswer = false;
-            }
-
-            //if (displayAnswer)
-            //    displayAnswer = false;
-
-            if (screen.Text == "Syntax Error" || screen.Text == "Error")
-            {
-                screen.Clear();
-                if (button.Text != "-")
-                    return;
-            }
+            if (displayAnswer) displayAnswer = false;
 
             if (string.IsNullOrEmpty(screen.Text))
             {
                 if (newOperation == "-")
                 {
                     screen.Text = "-";
-                    screen.SelectionStart = screen.Text.Length;
-                    return;
+                    screen.SelectionStart = 1;
                 }
-
                 return;
             }
 
-            
-
-            if (newOperation == "-")
+            if (cursorPosition > 0)
             {
-                if (string.IsNullOrEmpty(screen.Text) || (cursorPosition > 0 && screen.Text[cursorPosition - 1] == ' '))
+                char lastChar = screen.Text[cursorPosition - 1];
+
+                if ("+-x/ ".Contains(lastChar))
                 {
-                    screen.Text  = screen.Text.Insert(cursorPosition, "-");
-                    screen.SelectionStart = cursorPosition + 1;
-                    return;
+                    if (lastChar == ' ' && cursorPosition >= 2)
+                    {
+                        screen.Text = screen.Text.Remove(cursorPosition - 2, 3).Insert(cursorPosition - 2, " " + newOperation + " ");
+                        screen.SelectionStart = cursorPosition + 1;
+                    }
+                    else
+                    {
+                        screen.Text = screen.Text.Remove(cursorPosition - 1, 1).Insert(cursorPosition - 1, newOperation);
+                        screen.SelectionStart = cursorPosition;
+                    }
+                    return; 
                 }
             }
 
-            if (cursorPosition > 0 && screen.Text[cursorPosition - 1] == ' ')
-            {
-                if (cursorPosition >= 2)
-                {
-                    screen.Text = screen.Text.Remove(cursorPosition - 2, 1).Insert(cursorPosition - 2, newOperation);
-                    screen.SelectionStart = cursorPosition;
-                }
-                
-                screen.Focus();
-                screen.ScrollToCaret();
-                return;
-            }
-
-            string operationSpace = " " + newOperation + " ";
-            screen.Text = screen.Text.Insert(cursorPosition, operationSpace);
-
-            screen.SelectionStart = cursorPosition + operationSpace.Length;
+         
+            string toInsert = " " + newOperation + " ";
+            screen.Text = screen.Text.Insert(cursorPosition, toInsert);
+            screen.SelectionStart = cursorPosition + toInsert.Length;
 
             screen.Focus();
             screen.ScrollToCaret();
-            
         }
 
         private void Result(object sender, EventArgs e)
         {
-            // TO DO
-            // gonna study this one first
-            // putting negative numbers and decimals aside for now -> okay na
-            // multiline problems -> di ma scroll down
+            if (string.IsNullOrEmpty(screen.Text)) return;
 
-
-            if (string.IsNullOrEmpty(screen.Text))
-                return;
-
-            string pattern = @"(?<=\b|^| )-\d+\.?\d*|\d+\.?\d*|[x/+-]";
+            string pattern = @"-?\d+\.?\d*|[x/+-]"; 
 
             List<string> parts = Regex.Matches(screen.Text, pattern)
-                                        .Cast<Match>()
-                                        .Select(m => m.Value)
-                                        .ToList();
+                                      .Cast<Match>()
+                                      .Select(m => m.Value.Trim())
+                                      .Where(v => !string.IsNullOrWhiteSpace(v))
+                                      .ToList();
 
-            if (parts.Count == 0)
+            if (parts.Count < 1) 
                 return;
-            if ("x/+".Contains(parts.Last()))
+
+            if (parts.Count > 0 && "+-x/".Contains(parts.Last()))
             {
                 screen.Text = "Syntax Error";
                 displayAnswer = true;
                 return;
             }
-
-
-            if (parts[0] == "x" || parts[0] == "/" || parts[0] == "+")
-            {
-                screen.Text = "Syntax Error";
-                displayAnswer = true;
-                return;
-            }
-
-            if (parts.Count < 3 && !(parts.Count == 1 && double.TryParse(parts[0], out _)))
-            {
-                screen.Text = "Syntax Error";
-                displayAnswer = true;
-                return;
-            }
-
 
             try
             {
-                for (int z = 0; z < parts.Count; z++)
+                for (int y = 0; y < parts.Count; y++)
                 {
-                    if (parts[z] == "x" || parts[z] == "/" || parts[z] == "+" || parts[z] == "-")
-                        continue;
-
-                    if (!double.TryParse(parts[z], out _))
-                        throw new FormatException();
-                }
-
-
-                for (int a = 0; a < parts.Count; a++)
-                {
-                    if (parts[a] == "x" || parts[a] == "/")
+                    if (parts[y] == "x" || parts[y] == "/")
                     {
-                        double integerOne = double.Parse(parts[a - 1]);
-                        double integerTwo = double.Parse(parts[a + 1]);
-                        double tempResult = 0;
+                        double left = double.Parse(parts[y - 1]);
+                        double right = double.Parse(parts[y + 1]);
+                        double res = 0;
 
-                        if (parts[a] == "x")
-                            tempResult = integerOne * integerTwo;
-
-                        else if (parts[a] == "/")
+                        if (parts[y] == "x") res = left * right;
+                        else
                         {
-                            if (integerTwo == 0)
+                            if (right == 0) 
                                 throw new DivideByZeroException();
-                            tempResult = integerOne / integerTwo;
+
+                            res = left / right;
                         }
 
-                        parts[a - 1] = tempResult.ToString();
-                        parts.RemoveAt(a);
-                        parts.RemoveAt(a);
-                        a--;
+                        parts[y - 1] = res.ToString();
+                        parts.RemoveAt(y); 
+                        parts.RemoveAt(y); 
+                        y--; 
                     }
                 }
 
-
-                double currentResult = double.Parse(parts[0]);
-
-                for (int a = 1; a < parts.Count; a += 2)
+           
+                double finalResult = double.Parse(parts[0]);
+                for (int x = 1; x < parts.Count; x += 2)
                 {
-                    double solveNext = double.Parse(parts[a + 1]);
-                    string operation = parts[a];
+                    string op = parts[x];
+                    double nextVal = double.Parse(parts[x + 1]);
 
-                    if (operation == "+")
-                        currentResult += solveNext;
+                    if (op == "+") 
+                        finalResult += nextVal;
 
-                    else if (operation == "-")
-                        currentResult -= solveNext;
+                    else if (op == "-") 
+                        finalResult -= nextVal;
                 }
 
-                double roundedResult = Math.Round(currentResult, 7);
-                screen.Text = roundedResult.ToString();
+                screen.Text = Math.Round(finalResult, 7).ToString();
                 displayAnswer = true;
-            }
-            catch (DivideByZeroException)
-            {
-                screen.Text = "Math ERROR";
-                displayAnswer = true;
-            }
-            catch (Exception)
-            {
-                screen.Text = "Syntax ERROR";
-                displayAnswer = true;
+
+
             }
 
+            catch (Exception)
+            {
+                screen.Text = "Syntax Error";
+                displayAnswer = true;
+            }
         }
 
         private void ACbutton(object sender, EventArgs e)
@@ -320,8 +270,9 @@ namespace MyCalculator_1_
         { 
             // fix multiple decimals in a number
             int cursorPosition = screen.SelectionStart;
+            string textBeforeCursor = screen.Text.Substring(0, cursorPosition);
 
-            string[] chunks = screen.Text.Split(' ', '+', '-', 'x', '/');
+            string[] chunks = textBeforeCursor.Split(new char[] { ' ', '+', '-', 'x', '/'}, StringSplitOptions.None);
             string currentNumber = chunks.Last();
 
             if (currentNumber.Contains("."))
@@ -367,7 +318,7 @@ namespace MyCalculator_1_
 
         private void BackGround_Load(object sender, EventArgs e)
         {
-
+            //kahoykahoy
         }
 
         private void right_Click(object sender, EventArgs e)
@@ -378,9 +329,6 @@ namespace MyCalculator_1_
                 screen.SelectionStart += 1;
                 screen.ScrollToCaret();
             }
-                
-
-            
             screen.Focus();
         }
 
@@ -392,7 +340,6 @@ namespace MyCalculator_1_
                 screen.SelectionStart -= 1;
                 screen.ScrollToCaret();     
             }
-                
 
             screen.Focus();
         }
@@ -400,3 +347,5 @@ namespace MyCalculator_1_
        
     }
 }
+
+// doesnt solve when the numbers and operators lose space
