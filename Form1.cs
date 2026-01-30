@@ -13,7 +13,7 @@ namespace MyCalculator_1_
         double result;
         string operation = " ";
         bool displayAnswer;
-        public BackGround() 
+        public BackGround() //never delete this constructor
         {
             InitializeComponent();
         }
@@ -65,7 +65,7 @@ namespace MyCalculator_1_
             while (end < text.Length && text[end] != ' ')
                 end++;
 
-            string token = (end > start) ? text.Substring(start, end - start) : string.Empty;
+            string token = (end > start) ? text.Substring(start, end - start) : string.Empty; //extract token string
             return (start, end - start, token);
         }
 
@@ -78,7 +78,7 @@ namespace MyCalculator_1_
 
         private void Number_Click(object sender, EventArgs e)
         {
-            ErrorCutie(); 
+            ErrorCutie(); //helper for error guard
             Button button = (Button)sender;
 
             if (displayAnswer == true)
@@ -144,24 +144,25 @@ namespace MyCalculator_1_
 
         private void negativeSign(object sender, EventArgs e)
         {
-            if (displayAnswer) displayAnswer = false;
+            if (displayAnswer) 
+                displayAnswer = false;
 
             int cursorPosition = screen.SelectionStart;
             string text = screen.Text;
 
-            int lastDelimiter = -1;
-            char[] delimiters = { '+', 'x', '/', ' ' };
+            int nearOperation = -1;
+            char[] borderNumber = { '+', 'x', '/', ' ' };
 
             for (int i = cursorPosition - 1; i >= 0; i--)
             {
-                if (delimiters.Contains(text[i]))
+                if (borderNumber.Contains(text[i]))
                 {
-                    lastDelimiter = i;
+                    nearOperation = i;
                     break;
                 }
             }
 
-            int startOfNumber = lastDelimiter + 1;
+            int startOfNumber = nearOperation + 1;
 
             if (startOfNumber < text.Length && text[startOfNumber] == '-')
             {
@@ -223,7 +224,7 @@ namespace MyCalculator_1_
 
 
             string toInsert = " " + newOperation + " ";
-            screen.Text = screen.Text.Insert(cursorPosition, toInsert);
+            screen.Text = screen.Text.Insert(cursorPosition, toInsert); //insert new operation on cursor's location
             screen.SelectionStart = cursorPosition + toInsert.Length;
 
             screen.Focus();
@@ -242,7 +243,7 @@ namespace MyCalculator_1_
 
             string pattern = @"-?\d+\.?\d*|[x/+-]";
 
-            List<string> parts = Regex.Matches(screen.Text, pattern)
+            List<string> parts = Regex.Matches(screen.Text, pattern) // breaks each number and operator into list items
                                       .Cast<Match>()
                                       .Select(m => m.Value.Trim())
                                       .Where(v => !string.IsNullOrWhiteSpace(v))
@@ -308,11 +309,18 @@ namespace MyCalculator_1_
 
             }
 
+            catch (DivideByZeroException)
+            {
+                screen.Text = "Math Error";
+                displayAnswer = true;
+            }
+
             catch (Exception)
             {
                 screen.Text = "Syntax Error";
                 displayAnswer = true;
             }
+
 
             UpdatePosNegState();
         }
@@ -346,7 +354,7 @@ namespace MyCalculator_1_
         {
             int cursorPosition = Math.Min(Math.Max(0, screen.SelectionStart), screen.Text.Length);
 
-            var tokenInfo = GetNumberTokenAt(cursorPosition);
+            var tokenInfo = GetNumberTokenAt(cursorPosition); //determines what number token is at cursor
             string currentNumber = tokenInfo.Token;
             int tokenStart = tokenInfo.Start;
 
@@ -413,7 +421,7 @@ namespace MyCalculator_1_
 
         private void right_Click(object sender, EventArgs e)
         {
-            ErrorCutie(); 
+            ErrorCutie(); //helper for error guard
             if (screen.SelectionStart < screen.Text.Length)
             {
                 screen.SelectionStart += 1;
